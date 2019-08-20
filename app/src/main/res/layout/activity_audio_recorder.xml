@@ -6,18 +6,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context=".media.record.AudioRecorderActivity">
 
     <Button
-            android:id="@+id/media_recorder"
+            android:id="@+id/start_record"
             android:layout_width="match_parent"
-            android:text="MediaPlay录制和播放"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="开始录音"/>
 
     <Button
-            android:id="@+id/audio_recorder"
+            android:id="@+id/play_record"
             android:layout_width="match_parent"
-            android:text="AudioRecorder录制和播放"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="播放录音"/>
 
 </LinearLayout>
