@@ -20,4 +20,10 @@
             android:text="AudioRecorder录制和播放"
             android:layout_height="wrap_content"/>
 
+    <Button
+            android:id="@+id/break_media_recorder"
+            android:layout_width="match_parent"
+            android:text="使用MediaRecorder断点录制、合成"
+            android:layout_height="wrap_content"/>
+
 </LinearLayout>

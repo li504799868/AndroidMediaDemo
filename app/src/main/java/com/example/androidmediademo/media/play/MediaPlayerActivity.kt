@@ -1,12 +1,12 @@
 package com.example.androidmediademo.media.play
 
+import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
+import androidx.appcompat.app.AppCompatActivity
 import com.example.androidmediademo.R
 import kotlinx.android.synthetic.main.activity_media_player.*
-import java.io.File
 
 /**
  *  @author li.zhipeng
@@ -15,22 +15,25 @@ import java.io.File
  * */
 class MediaPlayerActivity : AppCompatActivity(), MediaPlayer.OnPreparedListener {
 
-    private val videoRecorderFile: String
+    companion object{
 
-    init {
-
-        val fileDir = File("${Environment.getExternalStorageDirectory().absolutePath}/test")
-        fileDir.mkdirs()
-        // 创建要保存的录音文件的路径
-        videoRecorderFile = "$fileDir/video_record.mp4"
+        fun open(context: Context, filePath:String){
+            val intent = Intent(context, MediaPlayerActivity::class.java)
+            intent.putExtra("filePath", filePath)
+            context.startActivity(intent)
+        }
 
     }
+
+    // 创建要保存的录音文件的路径
+    private lateinit var videoRecorderFile: String
 
     private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media_player)
+        videoRecorderFile = intent.getStringExtra("filePath")
     }
 
     override fun onResume() {

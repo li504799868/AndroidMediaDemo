@@ -1,6 +1,5 @@
 package com.example.androidmediademo.media.record
 
-import android.content.Intent
 import android.hardware.Camera
 import android.media.CamcorderProfile
 import android.media.MediaRecorder
@@ -87,7 +86,7 @@ class MediaRecorderActivity : AppCompatActivity(), SurfaceHolder.Callback {
             camera!!.unlock()
             setCamera(camera!!)
             // 设置录制的角度，如果与摄像头不符，会出现视频角度不对的问题
-            setOrientationHint(90);
+            setOrientationHint(90)
             // 设置录音和录制视频的来源
             setAudioSource(MediaRecorder.AudioSource.CAMCORDER)
             setVideoSource(MediaRecorder.VideoSource.CAMERA)
@@ -125,7 +124,7 @@ class MediaRecorderActivity : AppCompatActivity(), SurfaceHolder.Callback {
         isRecording = false
         video_record.text = "开始录制"
         // 跳转播放
-        startActivity(Intent(this, MediaPlayerActivity::class.java))
+        MediaPlayerActivity.open(this, videoRecorderFile)
     }
 
 }

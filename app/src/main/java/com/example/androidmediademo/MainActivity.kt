@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.androidmediademo.media.record.AudioRecorderActivity
 import com.example.androidmediademo.media.record.MediaRecorderActivity
+import com.example.androidmediademo.media.record.br.BreakRecordActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -24,6 +25,10 @@ class MainActivity : AppCompatActivity() {
         audio_recorder.setOnClickListener {
             startAudioRecorderWithPermissionCheck()
         }
+
+        break_media_recorder.setOnClickListener {
+            startBreakMediaRecorderWithPermissionCheck()
+        }
     }
 
     @NeedsPermission(
@@ -41,6 +46,15 @@ class MainActivity : AppCompatActivity() {
     )
     fun startAudioRecorder() {
         startActivity(Intent(this@MainActivity, AudioRecorderActivity::class.java))
+    }
+
+    @NeedsPermission(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.CAMERA
+    )
+    fun startBreakMediaRecorder() {
+        startActivity(Intent(this@MainActivity, BreakRecordActivity::class.java))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
