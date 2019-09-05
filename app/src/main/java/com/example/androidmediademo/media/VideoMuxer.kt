@@ -7,6 +7,7 @@ import android.media.MediaMuxer
 import android.util.Log
 import java.io.File
 import java.nio.ByteBuffer
+import kotlin.math.max
 
 /**
  * @author li.zhipeng
@@ -162,6 +163,10 @@ object VideoMuxer {
                 videoPts += lastPts
                 videoMediaExtractor.release()
             }
+
+            // 录制完一个文件，时间戳对齐
+            audioPts = max(audioPts, videoPts)
+            videoPts =audioPts
         }
 
         mediaMuxer.stop()

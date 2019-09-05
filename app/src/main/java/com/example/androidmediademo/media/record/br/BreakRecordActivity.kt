@@ -73,9 +73,9 @@ class BreakRecordActivity : AppCompatActivity(), SurfaceHolder.Callback {
 //            mediaRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_720P))
             mediaRecorder!!.setOutputFile("${saveDir.absoluteFile}/record_${System.currentTimeMillis()}.mp4")
             mediaRecorder!!.setPreviewDisplay(surface_view.holder.surface)
-            mediaRecorder!!.prepare()
         }
         camera!!.unlock()
+        mediaRecorder!!.prepare()
         mediaRecorder!!.start()
         isRecording = true
         record_button.text = "结束录制"
