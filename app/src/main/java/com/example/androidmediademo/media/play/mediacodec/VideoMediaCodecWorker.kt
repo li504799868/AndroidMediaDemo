@@ -125,14 +125,13 @@ class VideoMediaCodecWorker(private val surface: Surface, private val filePath: 
 
     private fun sleepRender(audioBufferInfo: MediaCodec.BufferInfo, startMs: Long) {
         // 这里的时间是 毫秒  presentationTimeUs 的时间是累加的 以微秒进行一帧一帧的累加
-        while (audioBufferInfo.presentationTimeUs / 1000 > System.currentTimeMillis() - startMs) {
+        val timeDifference = audioBufferInfo.presentationTimeUs / 1000 - (System.currentTimeMillis() - startMs)
+        if (timeDifference > 0) {
             try {
-                sleep(16)
+                sleep(timeDifference)
             } catch (e: InterruptedException) {
                 e.printStackTrace()
-                break
             }
-
         }
     }
 
