@@ -146,6 +146,8 @@ class AudioMediaCodecWorker(private val filePath: String) : Thread() {
         mediaCodec!!.stop()
         mediaCodec!!.release()
         mediaExtractor.release()
+        audioTrack?.stop()
+        audioTrack?.release()
 
     }
 
