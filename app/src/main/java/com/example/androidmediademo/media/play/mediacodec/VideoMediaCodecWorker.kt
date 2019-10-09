@@ -35,6 +35,7 @@ class VideoMediaCodecWorker(private val surface: Surface, private val filePath: 
             Log.e(TAG, ">> format i $i : $mediaFormat")
             val mime = mediaFormat.getString(MediaFormat.KEY_MIME)
             Log.e(TAG, ">> mime i $i : $mime")
+            // 找到视频格式m，并创建对应的解码器
             if (mime.startsWith("video/")) {
                 mediaExtractor.selectTrack(i)
                 try {
@@ -49,12 +50,12 @@ class VideoMediaCodecWorker(private val surface: Surface, private val filePath: 
         // 没找到音频轨道，直接返回
         mediaCodec?.start() ?: return
 
-        // 每个buffer的元数据包括具体范围的偏移及大小，以及有效数据中相关的解码的buffer
-        val info = MediaCodec.BufferInfo()
         // 是否已经读到了结束的位置
         var isEOS = false
+        // 用于对准视频的时间戳
         val startMs = System.currentTimeMillis()
         while (!interrupted()) {
+            // 开始写入解码器
             if (!isEOS) {
                 // 返回使用有效输出的Buffer索引，如果没有相关Buffer可用，就返回-1
                 // 如果传入的timeoutUs为0， 将立马返回
@@ -88,7 +89,8 @@ class VideoMediaCodecWorker(private val surface: Surface, private val filePath: 
                 }
             }
 
-            //
+            // 每个buffer的元数据包括具体范围的偏移及大小，以及有效数据中相关的解码的buffer
+            val info = MediaCodec.BufferInfo()
             when (val outIndex = mediaCodec!!.dequeueOutputBuffer(info, 10000)) {
                 // 此类型已经废弃，如果使用的是getOutputBuffer（）可以忽略此状态
                 MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED -> {
