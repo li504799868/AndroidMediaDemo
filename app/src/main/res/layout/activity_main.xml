@@ -26,4 +26,10 @@
             android:text="使用MediaRecorder断点录制、合成"
             android:layout_height="wrap_content"/>
 
+    <Button
+            android:id="@+id/media_codec_player"
+            android:layout_width="match_parent"
+            android:text="使用MediaCodec播放视频"
+            android:layout_height="wrap_content"/>
+
 </LinearLayout>

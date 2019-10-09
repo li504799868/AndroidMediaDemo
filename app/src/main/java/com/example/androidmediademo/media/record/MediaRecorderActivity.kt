@@ -96,7 +96,7 @@ class MediaRecorderActivity : AppCompatActivity(), SurfaceHolder.Callback {
             // 设置编码的格式
 //            setVideoEncoder(MediaRecorder.VideoEncoder.H264)
             // 设置视频的大小，必须要在设置视频格式之后设置，否则会报错
-//            setVideoSize()
+//            setVideoSize(width, height)
             //视频的帧率
 //            setVideoFrameRate(25)
             // 设置录制的质量
