@@ -18,6 +18,9 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
+                android:name=".media.convert.RecordConvertAACActivity"
+                android:screenOrientation="portrait" />
+        <activity
                 android:name=".media.play.mediacodec.MediaCodecVideoPlayerActivity"
                 android:screenOrientation="portrait" />
         <activity

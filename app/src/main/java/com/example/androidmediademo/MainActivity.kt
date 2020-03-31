@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.androidmediademo.media.convert.RecordConvertAACActivity
 import com.example.androidmediademo.media.play.mediacodec.MediaCodecVideoPlayerActivity
 import com.example.androidmediademo.media.record.AudioRecorderActivity
 import com.example.androidmediademo.media.record.MediaRecorderActivity
@@ -33,6 +34,11 @@ class MainActivity : AppCompatActivity() {
 
         media_codec_player.setOnClickListener {
             startMediaCodedcPlayerWithPermissionCheck()
+        }
+
+        // 录制直接输入aac文件Demo
+        record_convert_aac.setOnClickListener {
+            startRecordConvertAACWithPermissionCheck()
         }
     }
 
@@ -68,6 +74,14 @@ class MainActivity : AppCompatActivity() {
     )
     fun startMediaCodedcPlayer() {
         startActivity(Intent(this@MainActivity, MediaCodecVideoPlayerActivity::class.java))
+    }
+
+    @NeedsPermission(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.RECORD_AUDIO
+    )
+    fun startRecordConvertAAC() {
+        startActivity(Intent(this@MainActivity, RecordConvertAACActivity::class.java))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

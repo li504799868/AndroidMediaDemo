@@ -32,4 +32,10 @@
             android:text="使用MediaCodec播放视频"
             android:layout_height="wrap_content"/>
 
+    <Button
+            android:id="@+id/record_convert_aac"
+            android:layout_width="match_parent"
+            android:text="录制输出aac文件"
+            android:layout_height="wrap_content"/>
+
 </LinearLayout>
