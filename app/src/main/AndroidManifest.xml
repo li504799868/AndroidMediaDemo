@@ -17,6 +17,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".media.convert.MonoToStereoActivity"
+                android:screenOrientation="portrait" />
         <activity
                 android:name=".media.convert.RecordConvertAACActivity"
                 android:screenOrientation="portrait" />

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".media.convert.MonoToStereoActivity">
+
+    <Button
+            android:id="@+id/record_mono"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="录制单声道pcm" />
+
+    <Button
+            android:id="@+id/convert_mono_to_stereo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="单声道转双声道" />
+
+    <Button
+            android:id="@+id/play_pcm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="播放原始pcm" />
+
+    <Button
+            android:id="@+id/play_stereo_pcm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="播放双声道pcm" />
+
+</LinearLayout>

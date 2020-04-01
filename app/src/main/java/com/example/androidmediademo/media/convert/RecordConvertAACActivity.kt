@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidmediademo.R
+import com.example.androidmediademo.media.Constants.SAMPLE_RATE
 import com.example.androidmediademo.media.play.mediacodec.AudioMediaCodecWorker
 import kotlinx.android.synthetic.main.activity_record_convert_a_a_c.*
 import java.io.File
@@ -25,10 +26,6 @@ class RecordConvertAACActivity : AppCompatActivity() {
     private var isRecording = false
 
     private val mediaPlayer = MediaPlayer()
-
-    companion object {
-        const val SAMPLE_RATE = 44100
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +55,7 @@ class RecordConvertAACActivity : AppCompatActivity() {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.stop()
             }
+            mediaPlayer.reset()
             mediaPlayer.setDataSource(it.absolutePath)
             mediaPlayer.prepare()
             mediaPlayer.start()
@@ -83,7 +81,7 @@ class RecordConvertAACActivity : AppCompatActivity() {
                 SAMPLE_RATE,
                 AudioFormat.CHANNEL_IN_STEREO,
                 AudioFormat.ENCODING_PCM_16BIT,
-                minBufferSize*5
+                minBufferSize * 5
             )
 
             recorder!!.startRecording()
@@ -109,8 +107,7 @@ class RecordConvertAACActivity : AppCompatActivity() {
                 MediaFormat.KEY_CHANNEL_MASK,
                 AudioFormat.CHANNEL_IN_STEREO
             )
-            // 不能设置这个属性
-            audioFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 4100)
+            audioFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, minBufferSize)
             audioFormat.setInteger(MediaFormat.KEY_BIT_RATE, 96000)
             audioFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 2)
             mediaCodec.configure(audioFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
@@ -121,50 +118,58 @@ class RecordConvertAACActivity : AppCompatActivity() {
             loop@ while (isRecording) {
 
                 // 方案1
-                val inputBufferIndex = mediaCodec.dequeueInputBuffer(-1)
-                if (inputBufferIndex >= 0) {
-                    val buffer = mediaCodec.getInputBuffer(inputBufferIndex) ?: continue
-                    buffer.clear()
-                    val readSize = recorder!!.read(buffer, buffer.capacity())
-
-                    // byte是8位，因为是要求16位的长度，所以要/2
-                    // 除以sampleRate（1秒采集的样本数量）
-                    // 除以声道数
-                    // 时间单位秒秒
-                    val presentationTimeUs = pcmSize * 1000000L / 2 / SAMPLE_RATE / 2
-                    pcmSize += readSize
-                    Log.e("lzp", "inputBufferIndex: $inputBufferIndex, readSize: $readSize, pcmSize:$pcmSize, presentationTimeUs:$presentationTimeUs")
-//                    val presentationTimeUs = (System.nanoTime() - startUs) / 1000L
-
-                    mediaCodec.queueInputBuffer(
-                        inputBufferIndex,
-                        0,
-                        readSize,
-                        presentationTimeUs,
-                        0
-                    )
-                }
+//                val inputBufferIndex = mediaCodec.dequeueInputBuffer(1000)
+//                if (inputBufferIndex >= 0) {
+//                    val buffer = mediaCodec.getInputBuffer(inputBufferIndex)
+//                    buffer?.let {
+//                        buffer.clear()
+//                        val readSize = recorder!!.read(buffer, buffer.capacity())
+//
+//                        // byte是8位，因为是要求16位的长度，所以要/2
+//                        // 除以sampleRate（1秒采集的样本数量）
+//                        // 除以声道数
+//                        // 时间单位秒秒
+//                        val presentationTimeUs = pcmSize * 1000000L / 2 / SAMPLE_RATE / 2
+//                        pcmSize += readSize
+//                        Log.e("lzp", "inputBufferIndex: $inputBufferIndex, readSize: $readSize, pcmSize:$pcmSize, presentationTimeUs:$presentationTimeUs")
+////                    val presentationTimeUs = (System.nanoTime() - startUs) / 1000L
+//
+//                        mediaCodec.queueInputBuffer(
+//                            inputBufferIndex,
+//                            0,
+//                            readSize,
+//                            presentationTimeUs,
+//                            0
+//                        )
+//                    }
+//                }
 
                 // 方案2
-//                val resultRead = recorder!!.read(recordedBytes, 0, recordedBytes.size)
-//                if (resultRead == AudioRecord.ERROR_BAD_VALUE || resultRead == AudioRecord.ERROR_INVALID_OPERATION) {
-//                    break
-//                }
-//
-//                val inputBufferIndex = mediaCodec.dequeueInputBuffer(-1)
-//                if (inputBufferIndex >= 0) {
-//                    val buffer = mediaCodec.getInputBuffer(inputBufferIndex) ?: continue
-//                    buffer.clear()
-                // 此处会报错
-//                    buffer.put(recordedBytes, 0, resultRead)
-//                    mediaCodec.queueInputBuffer(
-//                        inputBufferIndex,
-//                        0,
-//                        buffer.limit(),
-//                        (System.nanoTime() - startUs) / 1000L,
-//                        0
-//                    )
-//                }
+                val inputBufferIndex = mediaCodec.dequeueInputBuffer(1000)
+                if (inputBufferIndex >= 0) {
+                    val buffer = mediaCodec.getInputBuffer(inputBufferIndex)
+                    buffer?.let {
+                        val resultRead = recorder!!.read(recordedBytes, 0, recordedBytes.size)
+                        if (resultRead != AudioRecord.ERROR_BAD_VALUE && resultRead != AudioRecord.ERROR_INVALID_OPERATION) {
+                            buffer.clear()
+                            // 此处会报错
+                            buffer.put(recordedBytes, 0, resultRead)
+                            val presentationTimeUs = pcmSize * 1000000L / 2 / SAMPLE_RATE / 2
+                            pcmSize += resultRead
+                            mediaCodec.queueInputBuffer(
+                                inputBufferIndex,
+                                0,
+                                resultRead,
+                                presentationTimeUs,
+                                0
+                            )
+                            Log.e(
+                                "lzp",
+                                "inputBufferIndex: $inputBufferIndex, readSize: $resultRead, pcmSize:$pcmSize, presentationTimeUs:$presentationTimeUs"
+                            )
+                        }
+                    }
+                }
 
                 // 得到编码的结果
                 val bufferInfo = MediaCodec.BufferInfo()
@@ -185,30 +190,31 @@ class RecordConvertAACActivity : AppCompatActivity() {
                     }
                     else -> {
                         Log.e("lzp", "outIndex:$outIndex")
-                        val outBuffer = mediaCodec.getOutputBuffer(outIndex) ?: continue@loop
+                        val outBuffer = mediaCodec.getOutputBuffer(outIndex)
+                        outBuffer?.let {
+                            if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) {
+                                // The codec config data was pulled out and fed
+                                // to the muxer when we got
+                                // the INFO_OUTPUT_FORMAT_CHANGED status. Ignore
+                                // it.
+                                bufferInfo.size = 0
+                            }
+                            if (bufferInfo.size != 0) {
+                                outBuffer.position(bufferInfo.offset)
+                                outBuffer.limit(bufferInfo.offset + bufferInfo.size)
+                                fillADTS(
+                                    adts,
+                                    MediaCodecInfo.CodecProfileLevel.AACObjectLC,
+                                    SAMPLE_RATE,
+                                    AudioFormat.CHANNEL_IN_STEREO,
+                                    bufferInfo.size + 7
+                                )
+                                fous.write(ByteBuffer.wrap(adts))
+                                fous.write(outBuffer)
 
-                        if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) {
-                            // The codec config data was pulled out and fed
-                            // to the muxer when we got
-                            // the INFO_OUTPUT_FORMAT_CHANGED status. Ignore
-                            // it.
-                            bufferInfo.size = 0
+                            }
+                            mediaCodec.releaseOutputBuffer(outIndex, false)
                         }
-                        if (bufferInfo.size != 0) {
-                            outBuffer.position(bufferInfo.offset)
-                            outBuffer.limit(bufferInfo.offset + bufferInfo.size)
-                            fillADTS(
-                                adts,
-                                MediaCodecInfo.CodecProfileLevel.AACObjectLC,
-                                SAMPLE_RATE,
-                                AudioFormat.CHANNEL_IN_STEREO,
-                                bufferInfo.size + 7
-                            )
-                            fous.write(ByteBuffer.wrap(adts))
-                            fous.write(outBuffer)
-
-                        }
-                        mediaCodec.releaseOutputBuffer(outIndex, false)
                     }
                 }
 

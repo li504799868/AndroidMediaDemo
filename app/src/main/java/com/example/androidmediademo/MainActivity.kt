@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.androidmediademo.media.convert.MonoToStereoActivity
 import com.example.androidmediademo.media.convert.RecordConvertAACActivity
 import com.example.androidmediademo.media.play.mediacodec.MediaCodecVideoPlayerActivity
 import com.example.androidmediademo.media.record.AudioRecorderActivity
@@ -40,6 +41,12 @@ class MainActivity : AppCompatActivity() {
         record_convert_aac.setOnClickListener {
             startRecordConvertAACWithPermissionCheck()
         }
+
+        convert_mono_to_stereo.setOnClickListener {
+            startConvertMonoToStereoWithPermissionCheck()
+        }
+
+
     }
 
     @NeedsPermission(
@@ -82,6 +89,14 @@ class MainActivity : AppCompatActivity() {
     )
     fun startRecordConvertAAC() {
         startActivity(Intent(this@MainActivity, RecordConvertAACActivity::class.java))
+    }
+
+    @NeedsPermission(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.RECORD_AUDIO
+    )
+    fun startConvertMonoToStereo() {
+        startActivity(Intent(this@MainActivity, MonoToStereoActivity::class.java))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
