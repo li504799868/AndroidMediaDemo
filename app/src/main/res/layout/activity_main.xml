@@ -44,4 +44,10 @@
             android:text="录制单声道pcm转双声道"
             android:layout_height="wrap_content"/>
 
+    <Button
+            android:id="@+id/convert_stereo_to_mono"
+            android:layout_width="match_parent"
+            android:text="录制双声道pcm转单声道"
+            android:layout_height="wrap_content"/>
+
 </LinearLayout>
