@@ -151,7 +151,6 @@ class StereoToMonoActivity : AppCompatActivity() {
             for (index in 0 until shortBuffer.capacity() step 2) {
                 monoByteList.add((shortBuffer.get(index) + shortBuffer.get(index + 1)).toShort())
             }
-
             convertCallback()
         }
 
