@@ -149,7 +149,7 @@ class StereoToMonoActivity : AppCompatActivity() {
             // 使用kotlin的位运算 and shl等，无法得到正确的byte转short，short转init
 
             for (index in 0 until shortBuffer.capacity() step 2) {
-                monoByteList.add((shortBuffer.get(index) + shortBuffer.get(index + 1)).toShort())
+                monoByteList.add((shortBuffer.get(index) + shortBuffer.get(index + 1) / 2).toShort())
             }
             convertCallback()
         }
